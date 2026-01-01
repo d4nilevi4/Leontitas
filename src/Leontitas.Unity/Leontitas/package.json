@@ -3,9 +3,17 @@
   "displayName": "Leontitas",
   "version": "0.1.0",
   "unity": "2021.3",
+  "author": {
+    "name": "d4nilevi4",
+    "url": "https://github.com/d4nilevi4"
+  },
   "description": "Type-Safe Code Generator for LeoEcsLite",
   "keywords": ["ECS", "Entity Component System"],
   "dependencies": {
-    "com.leopotam.ecslite": "https://github.com/Leopotam/ecslite.git#2025.4.22"
+    "com.leopotam.ecslite": "2025.4.22"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/d4nilevi4/LeoEcsLite.git"
   }
 }
