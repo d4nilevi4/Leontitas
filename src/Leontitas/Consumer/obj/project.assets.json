@@ -1,0 +1,115 @@
+{
+  "version": 3,
+  "targets": {
+    "net8.0": {
+      "LeoEcsLite/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v8.0",
+        "compile": {
+          "bin/placeholder/LeoEcsLite.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/LeoEcsLite.dll": {}
+        }
+      },
+      "Leontitas/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v8.0",
+        "dependencies": {
+          "LeoEcsLite": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/Leontitas.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Leontitas.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "LeoEcsLite/1.0.0": {
+      "type": "project",
+      "path": "../LeoEcsLite/LeoEcsLite.csproj",
+      "msbuildProject": "../LeoEcsLite/LeoEcsLite.csproj"
+    },
+    "Leontitas/1.0.0": {
+      "type": "project",
+      "path": "../Leontitas/Leontitas.csproj",
+      "msbuildProject": "../Leontitas/Leontitas.csproj"
+    }
+  },
+  "projectFileDependencyGroups": {
+    "net8.0": [
+      "Leontitas >= 1.0.0"
+    ]
+  },
+  "packageFolders": {
+    "C:\\Users\\d4nilevi4\\.nuget\\packages\\": {}
+  },
+  "project": {
+    "version": "1.0.0",
+    "restore": {
+      "projectUniqueName": "E:\\Personal\\Unity\\Projects\\Leontitas\\src\\Leontitas\\Consumer\\Consumer.csproj",
+      "projectName": "Consumer",
+      "projectPath": "E:\\Personal\\Unity\\Projects\\Leontitas\\src\\Leontitas\\Consumer\\Consumer.csproj",
+      "packagesPath": "C:\\Users\\d4nilevi4\\.nuget\\packages\\",
+      "outputPath": "E:\\Personal\\Unity\\Projects\\Leontitas\\src\\Leontitas\\Consumer\\obj\\",
+      "projectStyle": "PackageReference",
+      "configFilePaths": [
+        "C:\\Users\\d4nilevi4\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+      ],
+      "originalTargetFrameworks": [
+        "net8.0"
+      ],
+      "sources": {
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+        "C:\\Program Files\\dotnet\\library-packs": {},
+        "https://api.nuget.org/v3/index.json": {}
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "projectReferences": {
+            "E:\\Personal\\Unity\\Projects\\Leontitas\\src\\Leontitas\\Leontitas\\Leontitas.csproj": {
+              "projectPath": "E:\\Personal\\Unity\\Projects\\Leontitas\\src\\Leontitas\\Leontitas\\Leontitas.csproj"
+            }
+          }
+        }
+      },
+      "warningProperties": {
+        "warnAsError": [
+          "NU1605"
+        ]
+      },
+      "restoreAuditProperties": {
+        "enableAudit": "true",
+        "auditLevel": "low",
+        "auditMode": "direct"
+      }
+    },
+    "frameworks": {
+      "net8.0": {
+        "targetAlias": "net8.0",
+        "imports": [
+          "net461",
+          "net462",
+          "net47",
+          "net471",
+          "net472",
+          "net48",
+          "net481"
+        ],
+        "assetTargetFallback": true,
+        "warn": true,
+        "frameworkReferences": {
+          "Microsoft.NETCore.App": {
+            "privateAssets": "all"
+          }
+        },
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.416/PortableRuntimeIdentifierGraph.json"
+      }
+    }
+  }
+}
