@@ -10,7 +10,7 @@
   "description": "Type-Safe Code Generator for LeoEcsLite",
   "keywords": ["ECS", "Entity Component System"],
   "dependencies": {
-    "com.leopotam.ecslite": "2025.4.22"
+    "com.leopotam.ecslite": "https://github.com/Leopotam/ecslite.git"
   },
   "repository": {
     "type": "git",
