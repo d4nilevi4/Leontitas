@@ -158,7 +158,16 @@ If you need these features, consider using full Entitas or implementing them man
 
 ### Unity Installation
 
-**Leontitas Core (Required)**
+Leontitas consists of two packages:
+
+| Package | Status | Description |
+|---------|--------|-------------|
+| **Leontitas Core** | **Required** | Main code generator and fluent API |
+| **Leontitas.Systems** | *Optional* | Entitas-style system lifecycle (`IInitializeSystem`, `IExecuteSystem`, etc.) |
+
+---
+
+#### Installing Leontitas Core (Required)
 
 **Option 1: Via Git URL (UPM)**
 
@@ -183,11 +192,37 @@ Add to your `Packages/manifest.json`:
 
 ---
 
-**Leontitas.Systems (Optional)**
+#### Installing Leontitas.Systems (Optional)
 
-For Entitas-style system lifecycle management, you can optionally install the Systems package. This provides `IInitializeSystem`, `IExecuteSystem`, `ICleanupSystem`, `ITearDownSystem` interfaces and `Feature` class for organizing systems.
+**If you want Entitas-style system lifecycle management**, install this additional package:
 
-See [Leontitas.Systems Integration](#leontitassystems-integration) section for installation instructions and usage examples.
+**Option 1: Via Git URL (UPM)**
+
+1. Open Unity Package Manager (`Window > Package Manager`)
+2. Click `+` → `Add package from git URL...`
+3. Enter:
+   ```
+   https://github.com/d4nilevi4/Leontitas.git?path=src/Leontitas.Unity/Systems
+   ```
+
+**Option 2: Via manifest.json**
+
+Add to your `Packages/manifest.json`:
+```json
+{
+  "dependencies": {
+    "com.d4nilevi4.leontitas": "https://github.com/d4nilevi4/Leontitas.git?path=src/Leontitas.Unity/Core",
+    "com.d4nilevi4.leontitas.systems": "https://github.com/d4nilevi4/Leontitas.git?path=src/Leontitas.Unity/Systems"
+  }
+}
+```
+
+**What does Leontitas.Systems provide?**
+- `IInitializeSystem`, `IExecuteSystem`, `ICleanupSystem`, `ITearDownSystem` interfaces
+- `Feature` class for organizing systems into groups
+- Clean lifecycle management similar to Entitas
+
+See [Leontitas.Systems Integration](#leontitassystems-integration) section for detailed usage examples.
 
 ## Quick start
 
