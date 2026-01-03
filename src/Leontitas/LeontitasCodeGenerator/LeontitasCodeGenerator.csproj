@@ -15,4 +15,25 @@
         <PackageReference ExcludeAssets="runtime" Include="Microsoft.CodeAnalysis.CSharp" Version="4.3.0" PrivateAssets="all" />
     </ItemGroup>
 
+    <!-- Post-build event to copy DLL and PDB to Leontitas.Unity/Core -->
+    <Target Name="CopyToLeontitasUnity" AfterTargets="Build">
+        <PropertyGroup>
+            <LeontitasUnityCoreFolder>$(MSBuildProjectDirectory)\..\..\Leontitas.Unity\Core</LeontitasUnityCoreFolder>
+        </PropertyGroup>
+
+        <Message Text="Copying LeontitasCodeGenerator files to Leontitas.Unity/Core..." Importance="high" />
+
+        <!-- Copy DLL file -->
+        <Copy SourceFiles="$(OutputPath)$(AssemblyName).dll"
+              DestinationFolder="$(LeontitasUnityCoreFolder)"
+              SkipUnchangedFiles="false" />
+
+        <!-- Copy PDB file -->
+        <Copy SourceFiles="$(OutputPath)$(AssemblyName).pdb"
+              DestinationFolder="$(LeontitasUnityCoreFolder)"
+              SkipUnchangedFiles="false" />
+
+        <Message Text="Files copied successfully to $(LeontitasUnityCoreFolder)" Importance="high" />
+    </Target>
+
 </Project>

@@ -215,8 +215,13 @@ public class WorldGenerator : IIncrementalGenerator
         sb.AppendLine("        {");
         sb.AppendLine($"            filterMask = {worldName}MaskExtensions.ExcludeByComponentIndex(filterMask, excludeIndex);");
         sb.AppendLine("        }");
-        sb.AppendLine("        ");
+        sb.AppendLine();
         sb.AppendLine($"        return new {worldName}Group(filterMask.End());");
+        sb.AppendLine("    }");
+        sb.AppendLine();
+        sb.AppendLine($"    public {worldName}Group GetGroup(INoneOf{worldName}Matcher matcher)");
+        sb.AppendLine("    {");
+        sb.AppendLine($"        return this.GetGroup((IAllOf{worldName}Matcher)matcher);");
         sb.AppendLine("    }");
         sb.AppendLine();
         sb.AppendLine("    private Mask FilterByComponentIndex(int index)");
