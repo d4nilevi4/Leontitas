@@ -460,7 +460,6 @@ entity.RemoveHealth();
 
 **Generated API:**
 ```csharp
-
 // Reference property
 ref Position pos = ref entity.PositionRef;
 
@@ -470,15 +469,28 @@ bool hasPosition = entity.HasPosition;
 // Add (all fields as parameters)
 entity.AddPosition(0f, 0f, 0f);
 
-// Change (update existing)
+// Add (from existing struct)
+var newPos = new Position { X = 0f, Y = 0f, Z = 0f };
+entity.AddPosition(in newPos);
+
+// Change (update existing with individual values)
 entity.ChangePosition(
-    entity.Position.X + 1,
-    entity.Position.Y,
-    entity.Position.Z
+    entity.PositionRef.X + 1,
+    entity.PositionRef.Y,
+    entity.PositionRef.Z
 );
 
-// Replace (add or update)
+// Change (update from struct)
+var updatedPos = entity.PositionRef;
+updatedPos.X += 1;
+entity.ChangePosition(in updatedPos);
+
+// Replace (add or update with individual values)
 entity.ReplacePosition(10f, 5f, 0f);
+
+// Replace (add or update from struct)
+var replacePos = new Position { X = 10f, Y = 5f, Z = 0f };
+entity.ReplacePosition(in replacePos);
 
 // Remove
 entity.RemovePosition();
@@ -857,9 +869,12 @@ Generated methods depend on the number of fields:
 **Generates:**
 - `bool HasPosition { get; }` - Returns existing component flag
 - `ref Position PositionRef { get; }` - Direct reference to component
-- `AddPosition(float x, float y)` - Add component
-- `ChangePosition(float x, float y)` - Update existing
-- `ReplacePosition(float x, float y)` - Add or update
+- `AddPosition(float x, float y)` - Add component with individual field values
+- `AddPosition(in Position component)` - Add component from existing struct
+- `ChangePosition(float x, float y)` - Update existing component with individual values
+- `ChangePosition(in Position component)` - Update existing component from struct
+- `ReplacePosition(float x, float y)` - Add or update with individual values
+- `ReplacePosition(in Position component)` - Add or update from struct
 - `RemovePosition()` - Remove component
 
 ---
