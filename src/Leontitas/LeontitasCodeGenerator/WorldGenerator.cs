@@ -185,7 +185,7 @@ public class WorldGenerator : IIncrementalGenerator
         sb.AppendLine("             return Create(in defaultConfig);");
         sb.AppendLine("        }");
         sb.AppendLine();
-        sb.AppendLine("        public new static void Destroy()");
+        sb.AppendLine("        public new void Destroy()");
         sb.AppendLine("        {");
         sb.AppendLine("             ((Leopotam.EcsLite.EcsWorld)Instance).Destroy();");
         sb.AppendLine("             _instance = null;");

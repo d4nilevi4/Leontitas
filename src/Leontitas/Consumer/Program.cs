@@ -31,6 +31,6 @@ class Program
             Console.WriteLine("Entity Id without Quaternion: " + gameEntity.IdRef.Value);
         }
         
-        GameWorld.Destroy();
+        world.Destroy();
     }
 }

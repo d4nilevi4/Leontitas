@@ -51,7 +51,7 @@ public class Benchmark
             }
         }
 
-        Leontitas.GameWorld.Destroy();
+        world.Destroy();
     }
 
     [Benchmark]
@@ -83,7 +83,7 @@ public class Benchmark
             }
         }
 
-        Leontitas.GameWorld.Destroy();
+        world.Destroy();
     }
 
     [Benchmark]
@@ -119,7 +119,7 @@ public class Benchmark
             }
         }
 
-        Leontitas.GameWorld.Destroy();
+        world.Destroy();
     }
 
     [Benchmark]
