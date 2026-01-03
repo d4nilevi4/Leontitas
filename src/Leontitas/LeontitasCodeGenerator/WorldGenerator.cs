@@ -136,7 +136,8 @@ public class WorldGenerator : IIncrementalGenerator
     {
         var sb = new StringBuilder();
         
-        sb.AppendLine("namespace Leontitas {");
+        sb.AppendLine("namespace Leontitas;");
+        sb.AppendLine();
         sb.AppendLine($"public sealed partial class {worldName}World : Leopotam.EcsLite.EcsWorld");
         sb.AppendLine("{");
         sb.AppendLine($"    public static readonly int MaxComponentsCount = {components.Length};");
@@ -283,7 +284,6 @@ public class WorldGenerator : IIncrementalGenerator
         sb.AppendLine("        }");
         sb.AppendLine("    }");
         sb.AppendLine("}");
-        sb.AppendLine("}");
 
         context.AddSource($"{worldName}World.g.cs", sb.ToString());
     }
@@ -291,11 +291,11 @@ public class WorldGenerator : IIncrementalGenerator
     private static void GenerateComponentAttribute(string worldName, SourceProductionContext context)
     {
         var sb = new StringBuilder();
-        sb.AppendLine("namespace Leontitas {");
+        sb.AppendLine("namespace Leontitas;");
+        sb.AppendLine();
         sb.AppendLine("[System.AttributeUsage(System.AttributeTargets.Struct, AllowMultiple = false, Inherited = false)]");
         sb.AppendLine($"public class {worldName}Attribute : System.Attribute");
         sb.AppendLine("{");
-        sb.AppendLine("}");
         sb.AppendLine("}");
 
         context.AddSource($"{worldName}Attribute.g.cs", sb.ToString());
@@ -305,7 +305,8 @@ public class WorldGenerator : IIncrementalGenerator
     {
         var sb = new StringBuilder();
         
-        sb.AppendLine("namespace Leontitas {");
+        sb.AppendLine("namespace Leontitas;");
+        sb.AppendLine();
         sb.AppendLine($"public readonly ref partial struct {worldName}Entity");
         sb.AppendLine("{");
         sb.AppendLine("    public int InstanceId { get; }");
@@ -354,7 +355,6 @@ public class WorldGenerator : IIncrementalGenerator
         sb.AppendLine("        return sb.ToString();");
         sb.AppendLine("    }");
         sb.AppendLine("}");
-        sb.AppendLine("}");
 
         context.AddSource($"{worldName}Entity.g.cs", sb.ToString());
     }
@@ -363,7 +363,8 @@ public class WorldGenerator : IIncrementalGenerator
     {
         var sb = new StringBuilder();
         
-        sb.AppendLine("namespace Leontitas {");
+        sb.AppendLine("namespace Leontitas;");
+        sb.AppendLine();
         sb.AppendLine($"public readonly struct Packed{worldName}Entity");
         sb.AppendLine("{");
         sb.AppendLine("    private readonly int _instanceId;");
@@ -410,7 +411,6 @@ public class WorldGenerator : IIncrementalGenerator
         sb.AppendLine("        return true;");
         sb.AppendLine("    }");
         sb.AppendLine("}");
-        sb.AppendLine("}");
         
         context.AddSource($"Packed{worldName}Entity.g.cs", sb.ToString());
     }
@@ -419,7 +419,8 @@ public class WorldGenerator : IIncrementalGenerator
     {
         var sb = new StringBuilder();
         
-        sb.AppendLine("namespace Leontitas {");
+        sb.AppendLine("namespace Leontitas;");
+        sb.AppendLine();
         sb.AppendLine($"public readonly struct {worldName}Pool<TComponent>");
         sb.AppendLine("    where TComponent : struct, IComponent");
         sb.AppendLine("{");
@@ -450,7 +451,6 @@ public class WorldGenerator : IIncrementalGenerator
         sb.AppendLine("        _ecsPool.Del(entity.InstanceId);");
         sb.AppendLine("    }");
         sb.AppendLine("}");
-        sb.AppendLine("}");
 
         context.AddSource($"{worldName}Pool.g.cs", sb.ToString());
     }
@@ -459,7 +459,8 @@ public class WorldGenerator : IIncrementalGenerator
     {
         var sb = new StringBuilder();
         
-        sb.AppendLine("namespace Leontitas {");
+        sb.AppendLine("namespace Leontitas;");
+        sb.AppendLine();
         sb.AppendLine($"public partial class {worldName}Matcher : IAllOf{worldName}Matcher, INoneOf{worldName}Matcher");
         sb.AppendLine("{");
         sb.AppendLine("    public int[] IncludeIndices { get; private set; } = System.Array.Empty<int>();");
@@ -480,26 +481,25 @@ public class WorldGenerator : IIncrementalGenerator
         sb.AppendLine("        return this;");
         sb.AppendLine("    }");
         sb.AppendLine("}");
-        sb.AppendLine("}");
 
         context.AddSource($"{worldName}Matcher.g.cs", sb.ToString());
 
         sb.Clear();
-        sb.AppendLine("namespace Leontitas {");
+        sb.AppendLine("namespace Leontitas;");
+        sb.AppendLine();
         sb.AppendLine($"public interface IAllOf{worldName}Matcher");
         sb.AppendLine("{");
         sb.AppendLine($"    INoneOf{worldName}Matcher NoneOf(params int[] indices);");
-        sb.AppendLine("}");
         sb.AppendLine("}");
 
         context.AddSource($"IAllOf{worldName}Matcher.g.cs", sb.ToString());
 
         sb.Clear();
-        sb.AppendLine("namespace Leontitas {");
+        sb.AppendLine("namespace Leontitas;");
+        sb.AppendLine();
         sb.AppendLine($"public interface INoneOf{worldName}Matcher");
         sb.AppendLine("{");
         sb.AppendLine("    ");
-        sb.AppendLine("}");
         sb.AppendLine("}");
 
         context.AddSource($"INoneOf{worldName}Matcher.g.cs", sb.ToString());
@@ -509,7 +509,8 @@ public class WorldGenerator : IIncrementalGenerator
     {
         var sb = new StringBuilder();
         
-        sb.AppendLine("namespace Leontitas {");
+        sb.AppendLine("namespace Leontitas;");
+        sb.AppendLine();
         sb.AppendLine($"public readonly struct {worldName}Group ");
         sb.AppendLine("{");
         sb.AppendLine("    private readonly Leopotam.EcsLite.EcsFilter _filter;");
@@ -524,12 +525,12 @@ public class WorldGenerator : IIncrementalGenerator
         sb.AppendLine($"        return new {worldName}GroupEnumerator(_filter);");
         sb.AppendLine("    }");
         sb.AppendLine("}");
-        sb.AppendLine("}");
 
         context.AddSource($"{worldName}Group.g.cs", sb.ToString());
 
         sb.Clear();
-        sb.AppendLine("namespace Leontitas {");
+        sb.AppendLine("namespace Leontitas;");
+        sb.AppendLine();
         sb.AppendLine($"public ref struct {worldName}GroupEnumerator");
         sb.AppendLine("{");
         sb.AppendLine("    private readonly Leopotam.EcsLite.EcsFilter _filter;");
@@ -559,7 +560,6 @@ public class WorldGenerator : IIncrementalGenerator
         sb.AppendLine($"        _filterEnumerator.Dispose();");
         sb.AppendLine("    }");
         sb.AppendLine("}");
-        sb.AppendLine("}");
 
         context.AddSource($"{worldName}GroupEnumerator.g.cs", sb.ToString());
     }
@@ -568,7 +568,8 @@ public class WorldGenerator : IIncrementalGenerator
     {
         var sb = new StringBuilder();
         
-        sb.AppendLine("namespace Leontitas {");
+        sb.AppendLine("namespace Leontitas;");
+        sb.AppendLine();
         sb.AppendLine($"public static class {worldName}ComponentsLookup");
         sb.AppendLine("{");
         
@@ -577,7 +578,6 @@ public class WorldGenerator : IIncrementalGenerator
             sb.AppendLine($"    public static readonly int {components[i].ComponentName} = {i};");
         }
         
-        sb.AppendLine("}");
         sb.AppendLine("}");
 
         context.AddSource($"{worldName}ComponentsLookup.g.cs", sb.ToString());
@@ -591,7 +591,8 @@ public class WorldGenerator : IIncrementalGenerator
         }
         
         var sb = new StringBuilder();
-        sb.AppendLine("namespace Leontitas {");
+        sb.AppendLine("namespace Leontitas;");
+        sb.AppendLine();
         sb.AppendLine($"public partial class {worldName}Matcher");
         sb.AppendLine("{");
         
@@ -600,7 +601,6 @@ public class WorldGenerator : IIncrementalGenerator
             sb.AppendLine($"    public static int {component.ComponentName} => {worldName}ComponentsLookup.{component.ComponentName};");
         }
         
-        sb.AppendLine("}");
         sb.AppendLine("}");
         
         context.AddSource($"{worldName}Matcher_ComponentIndices.g.cs", sb.ToString());
@@ -614,7 +614,8 @@ public class WorldGenerator : IIncrementalGenerator
             : $"{component.FullNamespace}.{component.ComponentName}";
         var poolName = $"{component.ComponentName}Pool";
         
-        sb.AppendLine("namespace Leontitas {");
+        sb.AppendLine("namespace Leontitas;");
+        sb.AppendLine();
         sb.AppendLine($"public readonly ref partial struct {worldName}Entity");
         sb.AppendLine("{");
         sb.AppendLine($"    private static {worldName}Pool<{componentFullName}> {poolName} =>");
@@ -745,7 +746,6 @@ public class WorldGenerator : IIncrementalGenerator
             sb.AppendLine("    }");
         }
         
-        sb.AppendLine("}");
         sb.AppendLine("}");
 
         context.AddSource($"{worldName}Entity_{component.ComponentName}.g.cs", sb.ToString());
