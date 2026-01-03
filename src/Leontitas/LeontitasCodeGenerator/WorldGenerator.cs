@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
@@ -155,7 +157,7 @@ public class WorldGenerator : IIncrementalGenerator
         sb.AppendLine("            }");
         sb.AppendLine("         }");
         sb.AppendLine("        ");
-        sb.AppendLine($"        private static {worldName}World? _instance;");
+        sb.AppendLine($"        private static {worldName}World _instance;");
         sb.AppendLine("        ");
         sb.AppendLine("        public " + worldName + "World(in Leopotam.EcsLite.EcsWorld.Config config) : base(in config)");
         sb.AppendLine("        {");
