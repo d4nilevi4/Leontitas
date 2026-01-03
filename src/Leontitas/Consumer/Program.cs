@@ -8,10 +8,10 @@ class Program
     {
         GameWorld world = GameWorld.Create();
         
-        world.CreateEntity()
+        GameEntity entity1 = world.CreateEntity()
             .AddId(1);
         
-        world.CreateEntity()
+        GameEntity entity2 = world.CreateEntity()
             .AddId(2)
             .AddQuaternion(1, 1, 1, 1);
        
@@ -19,6 +19,13 @@ class Program
             .AllOf(GameMatcher.Id)
             .NoneOf(GameMatcher.Quaternion));
 
+        foreach (GameEntity gameEntity in group)
+        {
+            Console.WriteLine("Entity Id without Quaternion: " + gameEntity.IdRef.Value);
+        }
+
+        entity1.Destroy();
+        
         foreach (GameEntity gameEntity in group)
         {
             Console.WriteLine("Entity Id without Quaternion: " + gameEntity.IdRef.Value);
