@@ -128,8 +128,6 @@ public class WorldGenerator : IIncrementalGenerator
             
             GenerateWorldClass(worldName, worldComponents, context);
             
-            // GenerateLeontitasGeneratedWorld(worldName, context);
-            
             GenerateComponents(worldName, worldComponents, context);
         }
     }
@@ -597,58 +595,6 @@ public class WorldGenerator : IIncrementalGenerator
         sb.AppendLine("}");
 
         context.AddSource($"{worldName}ComponentsLookup.g.cs", sb.ToString());
-    }
-
-    private static void GenerateLeontitasGeneratedWorld(string worldName, SourceProductionContext context)
-    {
-        var sb = new StringBuilder();
-        
-        sb.AppendLine("using Leopotam.EcsLite;");
-        sb.AppendLine();
-        sb.AppendLine("namespace Leontitas {");
-        sb.AppendLine("public static partial class LeontitasGeneratedWorld");
-        sb.AppendLine("{");
-        sb.AppendLine($"    private static {worldName}World? _{worldName.ToLower()}World;");
-        sb.AppendLine();
-        sb.AppendLine($"    public static {worldName}World {worldName}World");
-        sb.AppendLine("    {");
-        sb.AppendLine("        get");
-        sb.AppendLine("        {");
-        sb.AppendLine($"            if(_{worldName.ToLower()}World == null || !_{worldName.ToLower()}World.IsAlive())");
-        sb.AppendLine("            {");
-        sb.AppendLine($"                throw new System.Exception(\"{worldName}World is not created or already destroyed. Use Create{worldName}World method to create it.\");");
-        sb.AppendLine("            }");
-        sb.AppendLine();
-        sb.AppendLine($"            return _{worldName.ToLower()}World;");
-        sb.AppendLine("        }");
-        sb.AppendLine("    }");
-        sb.AppendLine();
-        sb.AppendLine($"    public static {worldName}World Create{worldName}World(in EcsWorld.Config config)");
-        sb.AppendLine("    {");
-        sb.AppendLine($"        if(_{worldName.ToLower()}World != null && _{worldName.ToLower()}World.IsAlive())");
-        sb.AppendLine("        {");
-        sb.AppendLine($"            throw new System.Exception(\"{worldName}World is already created. Destroy it before creating a new one.\");");
-        sb.AppendLine("        }");
-        sb.AppendLine("        ");
-        sb.AppendLine($"        _{worldName.ToLower()}World = new {worldName}World(in config);");
-        sb.AppendLine($"        return _{worldName.ToLower()}World;");
-        sb.AppendLine("    }");
-        sb.AppendLine();
-        sb.AppendLine($"    public static {worldName}World Create{worldName}World()");
-        sb.AppendLine("    {");
-        sb.AppendLine("        EcsWorld.Config defaultConfig = default;");
-        sb.AppendLine($"        return Create{worldName}World(in defaultConfig);");
-        sb.AppendLine("    }");
-        sb.AppendLine("    ");
-        sb.AppendLine($"    public static void Destroy{worldName}World()");
-        sb.AppendLine("    {");
-        sb.AppendLine($"        _{worldName.ToLower()}World?.Destroy();");
-        sb.AppendLine($"        _{worldName.ToLower()}World = null;");
-        sb.AppendLine("    }");
-        sb.AppendLine("}");
-        sb.AppendLine("}");
-
-        context.AddSource($"LeontitasGeneratedWorld_{worldName}.g.cs", sb.ToString());
     }
 
     private static void GenerateComponents(string worldName, StructInfo[] components, SourceProductionContext context)
