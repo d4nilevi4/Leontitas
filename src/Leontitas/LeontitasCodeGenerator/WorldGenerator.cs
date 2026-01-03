@@ -136,12 +136,8 @@ public class WorldGenerator : IIncrementalGenerator
     {
         var sb = new StringBuilder();
         
-        sb.AppendLine("using Leontitas;");
-        sb.AppendLine("using Leopotam.EcsLite;");
-        sb.AppendLine("using System;");
-        sb.AppendLine();
         sb.AppendLine("namespace Leontitas {");
-        sb.AppendLine($"public sealed partial class {worldName}World : EcsWorld");
+        sb.AppendLine($"public sealed partial class {worldName}World : Leopotam.EcsLite.EcsWorld");
         sb.AppendLine("{");
         sb.AppendLine($"    public static readonly int MaxComponentsCount = {components.Length};");
         sb.AppendLine("    ");
@@ -151,7 +147,7 @@ public class WorldGenerator : IIncrementalGenerator
         sb.AppendLine("        {");
         sb.AppendLine("             if(_instance == null && !_instance.IsAlive())");
         sb.AppendLine("             {");
-        sb.AppendLine("                 throw new Exception(\"GameWorld is not created or already destroyed. Use CreateGameWorld method to create it.\");");
+        sb.AppendLine("                 throw new System.Exception(\"GameWorld is not created or already destroyed. Use CreateGameWorld method to create it.\");");
         sb.AppendLine("             }");
         sb.AppendLine("    ");
         sb.AppendLine("             return _instance;");
@@ -160,15 +156,15 @@ public class WorldGenerator : IIncrementalGenerator
         sb.AppendLine("    ");
         sb.AppendLine($"    private static {worldName}World? _instance;");
         sb.AppendLine("    ");
-        sb.AppendLine("    public " + worldName + "World(in EcsWorld.Config config) : base(in config)");
+        sb.AppendLine("    public " + worldName + "World(in Leopotam.EcsLite.EcsWorld.Config config) : base(in config)");
         sb.AppendLine("    {");
         sb.AppendLine("    }");
         sb.AppendLine();
-        sb.AppendLine($"    public static {worldName}World Create(in EcsWorld.Config config)");
+        sb.AppendLine($"    public static {worldName}World Create(in Leopotam.EcsLite.EcsWorld.Config config)");
         sb.AppendLine("    {");
         sb.AppendLine("        if(_instance != null && _instance.IsAlive())");
         sb.AppendLine("        {");
-        sb.AppendLine("            throw new Exception(\"GameWorld is already created. Destroy it before creating a new one.\");");
+        sb.AppendLine("            throw new System.Exception(\"GameWorld is already created. Destroy it before creating a new one.\");");
         sb.AppendLine("        }");
         sb.AppendLine();
         sb.AppendLine($"        _instance = new {worldName}World(in config);");
@@ -177,13 +173,13 @@ public class WorldGenerator : IIncrementalGenerator
         sb.AppendLine();
         sb.AppendLine($"    public static {worldName}World Create()");
         sb.AppendLine("    {");
-        sb.AppendLine("         EcsWorld.Config defaultConfig = default;");
+        sb.AppendLine("         Leopotam.EcsLite.EcsWorld.Config defaultConfig = default;");
         sb.AppendLine("         return Create(in defaultConfig);");
         sb.AppendLine("    }");
         sb.AppendLine();
         sb.AppendLine("    public new static void Destroy()");
         sb.AppendLine("    {");
-        sb.AppendLine("         ((EcsWorld)Instance).Destroy();");
+        sb.AppendLine("         ((Leopotam.EcsLite.EcsWorld)Instance).Destroy();");
         sb.AppendLine("         _instance = null;");
         sb.AppendLine("    }");
         sb.AppendLine();
@@ -194,7 +190,7 @@ public class WorldGenerator : IIncrementalGenerator
         sb.AppendLine();
         sb.AppendLine($"    public {worldName}Pool<TComponent> Get{worldName}Pool<TComponent>() where TComponent : struct, IComponent");
         sb.AppendLine("    {");
-        sb.AppendLine("        var ecsPool = base.GetPool<TComponent>();");
+        sb.AppendLine("        Leopotam.EcsLite.EcsPool<TComponent> ecsPool = base.GetPool<TComponent>();");
         sb.AppendLine($"        return new {worldName}Pool<TComponent>(ecsPool);");
         sb.AppendLine("    }");
         sb.AppendLine("    ");
@@ -202,9 +198,9 @@ public class WorldGenerator : IIncrementalGenerator
         sb.AppendLine("    {");
         sb.AppendLine($"        {worldName}Matcher {worldName.ToLower()}Matcher = ({worldName}Matcher)matcher;");
         sb.AppendLine($"        int firstIndex = {worldName.ToLower()}Matcher.IncludeIndices[0];");
-        sb.AppendLine($"        ReadOnlySpan<int> includeIndices = {worldName.ToLower()}Matcher.IncludeIndices.AsSpan(1);");
+        sb.AppendLine($"        System.ReadOnlySpan<int> includeIndices = {worldName.ToLower()}Matcher.IncludeIndices.AsSpan(1);");
         sb.AppendLine("        ");
-        sb.AppendLine("        Mask filterMask = FilterByComponentIndex(firstIndex);");
+        sb.AppendLine("        Leopotam.EcsLite.EcsWorld.Mask filterMask = FilterByComponentIndex(firstIndex);");
         sb.AppendLine();
         sb.AppendLine("        foreach (int includeIndex in includeIndices)");
         sb.AppendLine("        {");
@@ -224,7 +220,7 @@ public class WorldGenerator : IIncrementalGenerator
         sb.AppendLine($"        return this.GetGroup((IAllOf{worldName}Matcher)matcher);");
         sb.AppendLine("    }");
         sb.AppendLine();
-        sb.AppendLine("    private Mask FilterByComponentIndex(int index)");
+        sb.AppendLine("    private Leopotam.EcsLite.EcsWorld.Mask FilterByComponentIndex(int index)");
         sb.AppendLine("    {");
         sb.AppendLine("        switch (index)");
         sb.AppendLine("        {");
@@ -247,7 +243,7 @@ public class WorldGenerator : IIncrementalGenerator
         sb.AppendLine();
         sb.AppendLine($"public static class {worldName}MaskExtensions");
         sb.AppendLine("{");
-        sb.AppendLine("    public static EcsWorld.Mask IncludeByComponentIndex(this EcsWorld.Mask mask, int index)");
+        sb.AppendLine("    public static Leopotam.EcsLite.EcsWorld.Mask IncludeByComponentIndex(this Leopotam.EcsLite.EcsWorld.Mask mask, int index)");
         sb.AppendLine("    {");
         sb.AppendLine("        switch (index)");
         sb.AppendLine("        {");
@@ -267,7 +263,7 @@ public class WorldGenerator : IIncrementalGenerator
         sb.AppendLine("        }");
         sb.AppendLine("    }");
         sb.AppendLine("    ");
-        sb.AppendLine("    public static EcsWorld.Mask ExcludeByComponentIndex(this EcsWorld.Mask mask, int index)");
+        sb.AppendLine("    public static Leopotam.EcsLite.EcsWorld.Mask ExcludeByComponentIndex(this Leopotam.EcsLite.EcsWorld.Mask mask, int index)");
         sb.AppendLine("    {");
         sb.AppendLine("        switch (index)");
         sb.AppendLine("        {");
@@ -309,8 +305,6 @@ public class WorldGenerator : IIncrementalGenerator
     {
         var sb = new StringBuilder();
         
-        sb.AppendLine("using Leopotam.EcsLite;");
-        sb.AppendLine();
         sb.AppendLine("namespace Leontitas {");
         sb.AppendLine($"public readonly ref partial struct {worldName}Entity");
         sb.AppendLine("{");
@@ -425,16 +419,13 @@ public class WorldGenerator : IIncrementalGenerator
     {
         var sb = new StringBuilder();
         
-        sb.AppendLine("using Leontitas;");
-        sb.AppendLine("using Leopotam.EcsLite;");
-        sb.AppendLine();
         sb.AppendLine("namespace Leontitas {");
         sb.AppendLine($"public readonly struct {worldName}Pool<TComponent>");
         sb.AppendLine("    where TComponent : struct, IComponent");
         sb.AppendLine("{");
-        sb.AppendLine("    private readonly EcsPool<TComponent> _ecsPool;");
+        sb.AppendLine("    private readonly Leopotam.EcsLite.EcsPool<TComponent> _ecsPool;");
         sb.AppendLine();
-        sb.AppendLine($"    public {worldName}Pool(EcsPool<TComponent> ecsPool)");
+        sb.AppendLine($"    public {worldName}Pool(Leopotam.EcsLite.EcsPool<TComponent> ecsPool)");
         sb.AppendLine("    {");
         sb.AppendLine("        _ecsPool = ecsPool;");
         sb.AppendLine("    }");
@@ -518,14 +509,12 @@ public class WorldGenerator : IIncrementalGenerator
     {
         var sb = new StringBuilder();
         
-        sb.AppendLine("using Leopotam.EcsLite;");
-        sb.AppendLine();
         sb.AppendLine("namespace Leontitas {");
         sb.AppendLine($"public readonly struct {worldName}Group ");
         sb.AppendLine("{");
-        sb.AppendLine("    private readonly EcsFilter _filter;");
+        sb.AppendLine("    private readonly Leopotam.EcsLite.EcsFilter _filter;");
         sb.AppendLine();
-        sb.AppendLine($"    public {worldName}Group(EcsFilter filter)");
+        sb.AppendLine($"    public {worldName}Group(Leopotam.EcsLite.EcsFilter filter)");
         sb.AppendLine("    {");
         sb.AppendLine("        _filter = filter;");
         sb.AppendLine("    }");
@@ -540,23 +529,20 @@ public class WorldGenerator : IIncrementalGenerator
         context.AddSource($"{worldName}Group.g.cs", sb.ToString());
 
         sb.Clear();
-        sb.AppendLine("using System.Runtime.CompilerServices;");
-        sb.AppendLine("using Leopotam.EcsLite;");
-        sb.AppendLine();
         sb.AppendLine("namespace Leontitas {");
         sb.AppendLine($"public ref struct {worldName}GroupEnumerator");
         sb.AppendLine("{");
-        sb.AppendLine("    private readonly EcsFilter _filter;");
-        sb.AppendLine("    private EcsFilter.Enumerator _filterEnumerator;");
+        sb.AppendLine("    private readonly Leopotam.EcsLite.EcsFilter _filter;");
+        sb.AppendLine("    private Leopotam.EcsLite.EcsFilter.Enumerator _filterEnumerator;");
         sb.AppendLine();
-        sb.AppendLine("    [MethodImpl(MethodImplOptions.AggressiveInlining)]");
-        sb.AppendLine($"    internal {worldName}GroupEnumerator(EcsFilter filter)");
+        sb.AppendLine("    [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]");
+        sb.AppendLine($"    internal {worldName}GroupEnumerator(Leopotam.EcsLite.EcsFilter filter)");
         sb.AppendLine("    {");
         sb.AppendLine("        _filter = filter;");
         sb.AppendLine("        _filterEnumerator = _filter.GetEnumerator();");
         sb.AppendLine("    }");
         sb.AppendLine();
-        sb.AppendLine("    [MethodImpl(MethodImplOptions.AggressiveInlining)]");
+        sb.AppendLine("    [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]");
         sb.AppendLine("    public bool MoveNext()");
         sb.AppendLine("    {");
         sb.AppendLine("        return _filterEnumerator.MoveNext();");
@@ -564,7 +550,7 @@ public class WorldGenerator : IIncrementalGenerator
         sb.AppendLine();
         sb.AppendLine($"    public {worldName}Entity Current");
         sb.AppendLine("    {");
-        sb.AppendLine("        [MethodImpl(MethodImplOptions.AggressiveInlining)]");
+        sb.AppendLine("        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]");
         sb.AppendLine($"        get => new {worldName}Entity(_filterEnumerator.Current);");
         sb.AppendLine("    }");
         sb.AppendLine();
