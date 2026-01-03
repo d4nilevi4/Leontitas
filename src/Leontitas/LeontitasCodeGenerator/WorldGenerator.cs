@@ -199,7 +199,7 @@ public class WorldGenerator : IIncrementalGenerator
         sb.AppendLine("        {");
         sb.AppendLine($"            {worldName}Matcher {worldName.ToLower()}Matcher = ({worldName}Matcher)matcher;");
         sb.AppendLine($"            int firstIndex = {worldName.ToLower()}Matcher.IncludeIndices[0];");
-        sb.AppendLine($"            System.ReadOnlySpan<int> includeIndices = {worldName.ToLower()}Matcher.IncludeIndices.AsSpan(1);");
+        sb.AppendLine($"            System.ReadOnlySpan<int> includeIndices = System.MemoryExtensions.AsSpan({worldName.ToLower()}Matcher.IncludeIndices, 1);");
         sb.AppendLine("            ");
         sb.AppendLine("            Leopotam.EcsLite.EcsWorld.Mask filterMask = FilterByComponentIndex(firstIndex);");
         sb.AppendLine();
