@@ -341,7 +341,7 @@ public class GameBootstrap : MonoBehaviour
     void OnDestroy()
     {
         // Clean up
-        GameWorld.Destroy();
+        _world.Destroy();
     }
 }
 ```
@@ -355,13 +355,13 @@ public class GameBootstrap : MonoBehaviour
 **Creating Worlds:**
 ```csharp
 // Create singleton instance
-GameWorld.Create();
+var world = GameWorld.Create();
 
-// Access instance
+// Access instance later
 var world = GameWorld.Instance;
 
 // Destroy when done
-GameWorld.Destroy();
+world.Destroy();
 ```
 
 **Multiple Worlds:**
@@ -372,9 +372,14 @@ GameWorld.Destroy();
 [assembly: WorldDeclaration("Input")]
 
 // Each gets its own API
-GameWorld.Create();
-UIWorld.Create();
-PhysicsWorld.Create();
+var gameWorld = GameWorld.Create();
+var uiWorld = UIWorld.Create();
+var inputWorld = InputWorld.Create();
+
+// Destroy when needed
+gameWorld.Destroy();
+uiWorld.Destroy();
+inputWorld.Destroy();
 
 // Components are world-specific
 [Game, UI, Input] public struct Id : IComponent { ... }
@@ -773,11 +778,12 @@ using UnityEngine;
 
 public class GameController : MonoBehaviour
 {
+    private GameWorld _world;
     private Feature _gameplayFeature;
 
     void Start()
     {
-        GameWorld.Create();
+        _world = GameWorld.Create();
 
         // Create a feature (system group)
         _gameplayFeature = new Feature();
@@ -803,7 +809,7 @@ public class GameController : MonoBehaviour
         // Tear down systems
         _gameplayFeature.TearDown();
 
-        GameWorld.Destroy();
+        _world.Destroy();
     }
 }
 ```
@@ -893,7 +899,7 @@ public sealed partial class GameWorld : EcsWorld
     public static void Create(in EcsWorld.Config config);
     public static void Create();
     
-    public static void Destroy();
+    public void Destroy();
 
     public GameEntity CreateEntity();
     
