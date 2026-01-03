@@ -748,7 +748,14 @@ public class WorldGenerator : IIncrementalGenerator
             }
             sb.AppendLine("            return this;");
             sb.AppendLine("        }");
-            sb.AppendLine("        ");
+            sb.AppendLine();
+            sb.AppendLine($"        public {worldName}Entity Add{componentApiName}(in {componentFullName} newComponent)");
+            sb.AppendLine("        {");
+            sb.AppendLine($"            ref {componentFullName} component = ref {poolName}.Add(this);");
+            sb.AppendLine($"            component = newComponent;");
+            sb.AppendLine("            return this;");
+            sb.AppendLine("        }");
+            sb.AppendLine();
             sb.AppendLine($"        public {worldName}Entity Replace{componentApiName}({parameters})");
             sb.AppendLine("        {");
             sb.AppendLine($"            if ({poolName}.Has(this))");
@@ -761,6 +768,18 @@ public class WorldGenerator : IIncrementalGenerator
             sb.AppendLine("            }");
             sb.AppendLine("        }");
             sb.AppendLine();
+            sb.AppendLine($"        public {worldName}Entity Replace{componentApiName}(in {componentFullName} newComponent)");
+            sb.AppendLine("        {");
+            sb.AppendLine($"            if ({poolName}.Has(this))");
+            sb.AppendLine("            {");
+            sb.AppendLine($"                return Change{componentApiName}(in newComponent);");
+            sb.AppendLine("            }");
+            sb.AppendLine("            else");
+            sb.AppendLine("            {");
+            sb.AppendLine($"                return Add{componentApiName}(in newComponent);");
+            sb.AppendLine("            }");
+            sb.AppendLine("        }");
+            sb.AppendLine();
             sb.AppendLine($"        public {worldName}Entity Change{componentApiName}({parameters})");
             sb.AppendLine("        {");
             sb.AppendLine($"            ref {componentFullName} component = ref {poolName}.Get(this);");
@@ -768,6 +787,13 @@ public class WorldGenerator : IIncrementalGenerator
             {
                 sb.AppendLine($"            component.{field.Name} = new{field.Name};");
             }
+            sb.AppendLine("            return this;");
+            sb.AppendLine("        }");
+            sb.AppendLine();
+            sb.AppendLine($"        public {worldName}Entity Change{componentApiName}(in {componentFullName} newComponent)");
+            sb.AppendLine("        {");
+            sb.AppendLine($"            ref {componentFullName} component = ref {poolName}.Get(this);");
+            sb.AppendLine($"            component = newComponent;");
             sb.AppendLine("            return this;");
             sb.AppendLine("        }");
             sb.AppendLine();
