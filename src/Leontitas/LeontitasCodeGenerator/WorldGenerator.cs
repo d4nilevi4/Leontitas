@@ -116,6 +116,8 @@ public class WorldGenerator : IIncrementalGenerator
             
             GenerateEntity(worldName, context);
             
+            GeneratePackedEntity(worldName, context);
+            
             GeneratePool(worldName, context);
             
             GenerateMatcher(worldName, context);
@@ -316,9 +318,14 @@ public class WorldGenerator : IIncrementalGenerator
         sb.AppendLine("{");
         sb.AppendLine("    public int InstanceId { get; }");
         sb.AppendLine();
-        sb.AppendLine($"    internal {worldName}Entity(int id)");
+        sb.AppendLine($"    public {worldName}Entity(int id)");
         sb.AppendLine("    {");
         sb.AppendLine("        InstanceId = id;");
+        sb.AppendLine("    }");
+        sb.AppendLine();
+        sb.AppendLine($"    public {worldName}Entity()");
+        sb.AppendLine("    {");
+        sb.AppendLine("        InstanceId = -1;");
         sb.AppendLine("    }");
         sb.AppendLine();
         sb.AppendLine($"    public static {worldName}Entity Create()");
@@ -326,9 +333,14 @@ public class WorldGenerator : IIncrementalGenerator
         sb.AppendLine($"        return {worldName}World.Instance.CreateEntity();");
         sb.AppendLine("    }");
         sb.AppendLine();
-        sb.AppendLine($"    public void Destroy()");
+        sb.AppendLine("    public void Destroy()");
         sb.AppendLine("    {");
         sb.AppendLine($"        {worldName}World.Instance.DelEntity(this.InstanceId);");
+        sb.AppendLine("    }");
+        sb.AppendLine();
+        sb.AppendLine($"    public Packed{worldName}Entity Pack()");
+        sb.AppendLine("    {");
+        sb.AppendLine($"        return new Packed{worldName}Entity(this);");
         sb.AppendLine("    }");
         sb.AppendLine();
         sb.AppendLine("    public override string ToString()");
@@ -353,6 +365,62 @@ public class WorldGenerator : IIncrementalGenerator
         sb.AppendLine("}");
 
         context.AddSource($"{worldName}Entity.g.cs", sb.ToString());
+    }
+
+    private static void GeneratePackedEntity(string worldName, SourceProductionContext context)
+    {
+        var sb = new StringBuilder();
+        
+        sb.AppendLine("namespace Leontitas {");
+        sb.AppendLine($"public readonly struct Packed{worldName}Entity");
+        sb.AppendLine("{");
+        sb.AppendLine("    private readonly int _instanceId;");
+        sb.AppendLine("    private readonly int _gen;");
+        sb.AppendLine();
+        sb.AppendLine($"    public Packed{worldName}Entity()");
+        sb.AppendLine("    {");
+        sb.AppendLine("        _instanceId = -1;");
+        sb.AppendLine("        _gen = -1;");
+        sb.AppendLine("    }");
+        sb.AppendLine();
+        sb.AppendLine($"    public Packed{worldName}Entity({worldName}Entity entity)");
+        sb.AppendLine("    {");
+        sb.AppendLine("        _instanceId = entity.InstanceId;");
+        sb.AppendLine($"        _gen = {worldName}World.Instance.GetEntityGen(entity.InstanceId);");
+        sb.AppendLine("    }");
+        sb.AppendLine();
+        sb.AppendLine($"    public bool TryUnpack(out {worldName}Entity entity)");
+        sb.AppendLine("    {");
+        sb.AppendLine("        entity = default;");
+        sb.AppendLine();
+        sb.AppendLine($"        var world = {worldName}World.Instance;");
+        sb.AppendLine("        if (!world.IsAlive())");
+        sb.AppendLine("        {");
+        sb.AppendLine("            return false;");
+        sb.AppendLine("        }");
+        sb.AppendLine();
+        sb.AppendLine("        int currentGen;");
+        sb.AppendLine("        try");
+        sb.AppendLine("        {");
+        sb.AppendLine("            currentGen = world.GetEntityGen(_instanceId);");
+        sb.AppendLine("        }");
+        sb.AppendLine("        catch (System.IndexOutOfRangeException)");
+        sb.AppendLine("        {");
+        sb.AppendLine("            return false;");
+        sb.AppendLine("        }");
+        sb.AppendLine();
+        sb.AppendLine("        if (currentGen != _gen)");
+        sb.AppendLine("        {");
+        sb.AppendLine("            return false;");
+        sb.AppendLine("        }");
+        sb.AppendLine();
+        sb.AppendLine($"        entity = new {worldName}Entity(_instanceId);");
+        sb.AppendLine("        return true;");
+        sb.AppendLine("    }");
+        sb.AppendLine("}");
+        sb.AppendLine("}");
+        
+        context.AddSource($"Packed{worldName}Entity.g.cs", sb.ToString());
     }
 
     private static void GeneratePool(string worldName, SourceProductionContext context)
