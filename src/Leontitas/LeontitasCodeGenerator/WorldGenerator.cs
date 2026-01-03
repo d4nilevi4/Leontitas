@@ -326,6 +326,11 @@ public class WorldGenerator : IIncrementalGenerator
         sb.AppendLine($"        return {worldName}World.Instance.CreateEntity();");
         sb.AppendLine("    }");
         sb.AppendLine();
+        sb.AppendLine($"    public void Destroy()");
+        sb.AppendLine("    {");
+        sb.AppendLine($"        {worldName}World.Instance.DelEntity(this.InstanceId);");
+        sb.AppendLine("    }");
+        sb.AppendLine();
         sb.AppendLine("    public override string ToString()");
         sb.AppendLine("    {");
         sb.AppendLine("        var sb = new System.Text.StringBuilder();");
