@@ -1,9 +1,29 @@
-﻿namespace Consumer;
+﻿using Leontitas;
+
+namespace Consumer;
 
 class Program
 {
     static void Main(string[] args)
     {
-        Console.WriteLine("Hello, World!");
+        GameWorld world = GameWorld.Create();
+        
+        world.CreateEntity()
+            .AddId(1);
+        
+        world.CreateEntity()
+            .AddId(2)
+            .AddQuaternion(1, 1, 1, 1);
+       
+        GameGroup group = world.GetGroup(GameMatcher
+            .AllOf(GameMatcher.Id)
+            .NoneOf(GameMatcher.Quaternion));
+
+        foreach (GameEntity gameEntity in group)
+        {
+            Console.WriteLine("Entity Id without Quaternion: " + gameEntity.IdRef.Value);
+        }
+        
+        GameWorld.Destroy();
     }
 }
