@@ -607,12 +607,22 @@ public class WorldGenerator : IIncrementalGenerator
         context.AddSource($"{worldName}Matcher_ComponentIndices.g.cs", sb.ToString());
     }
 
+    private static string GetComponentApiName(string componentName)
+    {
+        if (componentName.EndsWith("Component") && componentName.Length > "Component".Length)
+        {
+            return componentName.Substring(0, componentName.Length - "Component".Length);
+        }
+        return componentName;
+    }
+
     private static void GenerateComponentExtensions(string worldName, StructInfo component, SourceProductionContext context)
     {
         var sb = new StringBuilder();
         var componentFullName = string.IsNullOrEmpty(component.FullNamespace)
             ? component.ComponentName
             : $"{component.FullNamespace}.{component.ComponentName}";
+        var componentApiName = GetComponentApiName(component.ComponentName);
         var poolName = $"{component.ComponentName}Pool";
 
         sb.AppendLine("namespace Leontitas");
@@ -627,7 +637,7 @@ public class WorldGenerator : IIncrementalGenerator
 
         if (isFlag)
         {
-            sb.AppendLine($"        public bool Is{component.ComponentName}");
+            sb.AppendLine($"        public bool Is{componentApiName}");
             sb.AppendLine("        {");
             sb.AppendLine("            get");
             sb.AppendLine("            {");
@@ -652,48 +662,48 @@ public class WorldGenerator : IIncrementalGenerator
             sb.AppendLine("            }");
             sb.AppendLine("        }");
             sb.AppendLine("        ");
-            sb.AppendLine($"        public {worldName}Entity Set{component.ComponentName}Flag(bool is{component.ComponentName})");
+            sb.AppendLine($"        public {worldName}Entity Set{componentApiName}Flag(bool is{componentApiName})");
             sb.AppendLine("        {");
-            sb.AppendLine($"            Is{component.ComponentName} = is{component.ComponentName};");
+            sb.AppendLine($"            Is{componentApiName} = is{componentApiName};");
             sb.AppendLine("            return this;");
             sb.AppendLine("        }");
         }
         else if (component.Fields.Length == 1)
         {
             var field = component.Fields[0];
-            sb.AppendLine($"        public ref {componentFullName} {component.ComponentName}Ref => ref {poolName}.Get(this);");
+            sb.AppendLine($"        public ref {componentFullName} {componentApiName}Ref => ref {poolName}.Get(this);");
             sb.AppendLine();
-            sb.AppendLine($"        public bool Has{component.ComponentName} => {poolName}.Has(this);");
+            sb.AppendLine($"        public bool Has{componentApiName} => {poolName}.Has(this);");
             sb.AppendLine();
-            sb.AppendLine($"        public {field.Type} {component.ComponentName} => {poolName}.Get(this).{field.Name};");
+            sb.AppendLine($"        public {field.Type} {componentApiName} => {poolName}.Get(this).{field.Name};");
             sb.AppendLine();
-            sb.AppendLine($"        public {worldName}Entity Add{component.ComponentName}({field.Type} new{field.Name})");
+            sb.AppendLine($"        public {worldName}Entity Add{componentApiName}({field.Type} new{field.Name})");
             sb.AppendLine("        {");
             sb.AppendLine($"            ref var component = ref {poolName}.Add(this);");
             sb.AppendLine($"            component.{field.Name} = new{field.Name};");
             sb.AppendLine("            return this;");
             sb.AppendLine("        }");
             sb.AppendLine();
-            sb.AppendLine($"        public {worldName}Entity Replace{component.ComponentName}({field.Type} new{field.Name})");
+            sb.AppendLine($"        public {worldName}Entity Replace{componentApiName}({field.Type} new{field.Name})");
             sb.AppendLine("        {");
             sb.AppendLine($"            if ({poolName}.Has(this))");
             sb.AppendLine("            {");
-            sb.AppendLine($"                return Change{component.ComponentName}(new{field.Name});");
+            sb.AppendLine($"                return Change{componentApiName}(new{field.Name});");
             sb.AppendLine("            }");
             sb.AppendLine("            else");
             sb.AppendLine("            {");
-            sb.AppendLine($"                return Add{component.ComponentName}(new{field.Name});");
+            sb.AppendLine($"                return Add{componentApiName}(new{field.Name});");
             sb.AppendLine("            }");
             sb.AppendLine("        }");
             sb.AppendLine();
-            sb.AppendLine($"        public {worldName}Entity Change{component.ComponentName}({field.Type} new{field.Name})");
+            sb.AppendLine($"        public {worldName}Entity Change{componentApiName}({field.Type} new{field.Name})");
             sb.AppendLine("        {");
             sb.AppendLine($"            ref var component = ref {poolName}.Get(this);");
             sb.AppendLine($"            component.{field.Name} = new{field.Name};");
             sb.AppendLine("            return this;");
             sb.AppendLine("        }");
             sb.AppendLine();
-            sb.AppendLine($"        public {worldName}Entity Remove{component.ComponentName}()");
+            sb.AppendLine($"        public {worldName}Entity Remove{componentApiName}()");
             sb.AppendLine("        {");
             sb.AppendLine($"            {poolName}.Remove(this);");
             sb.AppendLine("            return this;");
@@ -701,14 +711,14 @@ public class WorldGenerator : IIncrementalGenerator
         }
         else
         {
-            sb.AppendLine($"        public ref {componentFullName} {component.ComponentName}Ref => ref {poolName}.Get(this);");
+            sb.AppendLine($"        public ref {componentFullName} {componentApiName}Ref => ref {poolName}.Get(this);");
             sb.AppendLine();
-            sb.AppendLine($"        public bool Has{component.ComponentName} => {poolName}.Has(this);");
+            sb.AppendLine($"        public bool Has{componentApiName} => {poolName}.Has(this);");
             sb.AppendLine();
 
             var parameters = string.Join(", ", component.Fields.Select(f => $"{f.Type} new{f.Name}"));
 
-            sb.AppendLine($"        public {worldName}Entity Add{component.ComponentName}({parameters})");
+            sb.AppendLine($"        public {worldName}Entity Add{componentApiName}({parameters})");
             sb.AppendLine("        {");
             sb.AppendLine($"            ref {componentFullName} component = ref {poolName}.Add(this);");
             foreach (var field in component.Fields)
@@ -718,19 +728,19 @@ public class WorldGenerator : IIncrementalGenerator
             sb.AppendLine("            return this;");
             sb.AppendLine("        }");
             sb.AppendLine("        ");
-            sb.AppendLine($"        public {worldName}Entity Replace{component.ComponentName}({parameters})");
+            sb.AppendLine($"        public {worldName}Entity Replace{componentApiName}({parameters})");
             sb.AppendLine("        {");
             sb.AppendLine($"            if ({poolName}.Has(this))");
             sb.AppendLine("            {");
-            sb.AppendLine($"                return Change{component.ComponentName}({string.Join(", ", component.Fields.Select(f => $"new{f.Name}"))});");
+            sb.AppendLine($"                return Change{componentApiName}({string.Join(", ", component.Fields.Select(f => $"new{f.Name}"))});");
             sb.AppendLine("            }");
             sb.AppendLine("            else");
             sb.AppendLine("            {");
-            sb.AppendLine($"                return Add{component.ComponentName}({string.Join(", ", component.Fields.Select(f => $"new{f.Name}"))});");
+            sb.AppendLine($"                return Add{componentApiName}({string.Join(", ", component.Fields.Select(f => $"new{f.Name}"))});");
             sb.AppendLine("            }");
             sb.AppendLine("        }");
             sb.AppendLine();
-            sb.AppendLine($"        public {worldName}Entity Change{component.ComponentName}({parameters})");
+            sb.AppendLine($"        public {worldName}Entity Change{componentApiName}({parameters})");
             sb.AppendLine("        {");
             sb.AppendLine($"            ref {componentFullName} component = ref {poolName}.Get(this);");
             foreach (var field in component.Fields)
@@ -740,7 +750,7 @@ public class WorldGenerator : IIncrementalGenerator
             sb.AppendLine("            return this;");
             sb.AppendLine("        }");
             sb.AppendLine();
-            sb.AppendLine($"        public {worldName}Entity Remove{component.ComponentName}()");
+            sb.AppendLine($"        public {worldName}Entity Remove{componentApiName}()");
             sb.AppendLine("        {");
             sb.AppendLine($"            {poolName}.Remove(this);");
             sb.AppendLine("            return this;");
