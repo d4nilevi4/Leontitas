@@ -311,7 +311,7 @@ public class WorldGenerator : IIncrementalGenerator
         sb.AppendLine("{");
         sb.AppendLine($"    public readonly ref partial struct {worldName}Entity");
         sb.AppendLine("    {");
-        sb.AppendLine("        public int InstanceId { get; } = -1;");
+        sb.AppendLine("        public readonly int InstanceId;");
         sb.AppendLine();
         sb.AppendLine($"        public {worldName}Entity(int id)");
         sb.AppendLine("        {");
@@ -365,8 +365,8 @@ public class WorldGenerator : IIncrementalGenerator
         sb.AppendLine("{");
         sb.AppendLine($"    public readonly struct Packed{worldName}Entity");
         sb.AppendLine("    {");
-        sb.AppendLine("        private readonly int _instanceId = -1;");
-        sb.AppendLine("        private readonly int _gen = -1;");
+        sb.AppendLine("        private readonly int _instanceId;");
+        sb.AppendLine("        private readonly int _gen;");
         sb.AppendLine();
         sb.AppendLine($"        public Packed{worldName}Entity({worldName}Entity entity)");
         sb.AppendLine("        {");
