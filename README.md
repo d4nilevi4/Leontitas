@@ -68,12 +68,11 @@ Leontitas is a **source code generator** for the LeoEcsLite Entity Component Sys
 
 ### What Leontitas IS
 
-- A **non-invasive code generation add-on** for LeoEcsLite
+- An **extension** - works on top of LeoEcsLite, doesn't modify it
 - A **learning project** exploring source generators and ECS architecture
 - A **bridge** between LeoEcsLite's performance and Entitas's developer experience
 - An **experiment** in combining two excellent frameworks
 - A **compile-time tool** - generates code during build, not at runtime
-- An **extension** - works on top of LeoEcsLite, doesn't modify it
 - **Compatible with raw LeoEcsLite** - mix both APIs freely
 
 ### What Leontitas IS NOT
@@ -281,14 +280,13 @@ using UnityEngine;
 
 public class GameBootstrap : MonoBehaviour
 {
-    private GameWorld _world;
     private GameGroup _movables;
     private GameGroup _players;
 
     private void Start()
     {
         // Create the world
-        _world = GameWorld.Create();
+        GameWorld.Create();
 
         // Create entities with fluent API
         var player = GameEntity.Create()
@@ -307,12 +305,12 @@ public class GameBootstrap : MonoBehaviour
         Debug.Log($"Player health: {player.Health}");
 
         // Query movable entities
-        _movables = _world.GetGroup(
+        _movables = GameWorld.GetGroup(
             GameMatcher.AllOf(GameMatcher.Movable, GameMatcher.Velocity)
         );
 
         // Query players specifically
-        _players = _world.GetGroup(
+        _players = GameWorld.GetGroup(
             GameMatcher.AllOf(GameMatcher.Player)
         );
 
@@ -341,7 +339,7 @@ public class GameBootstrap : MonoBehaviour
     void OnDestroy()
     {
         // Clean up
-        _world.Destroy();
+        GameWorld.Destroy();
     }
 }
 ```
@@ -355,13 +353,13 @@ public class GameBootstrap : MonoBehaviour
 **Creating Worlds:**
 ```csharp
 // Create singleton instance
-var world = GameWorld.Create();
+GameWorld.Create();
 
 // Access instance later
 var world = GameWorld.Instance;
 
 // Destroy when done
-world.Destroy();
+GameWorld.Destroy();
 ```
 
 **Multiple Worlds:**
@@ -377,9 +375,9 @@ var uiWorld = UIWorld.Create();
 var inputWorld = InputWorld.Create();
 
 // Destroy when needed
-gameWorld.Destroy();
-uiWorld.Destroy();
-inputWorld.Destroy();
+GameWorld.Destroy();
+UIWorld.Destroy();
+InputWorld.Destroy();
 
 // Components are world-specific
 [Game, UI, Input] public struct Id : IComponent { ... }
@@ -547,7 +545,7 @@ entity.Destroy();
 **Basic Queries:**
 ```csharp
 // All entities with specific components
-var movables = GameWorld.Instance.GetGroup(
+var movables = GameWorld.GetGroup(
     GameMatcher.AllOf(GameMatcher.Movable, GameMatcher.Velocity)
 );
 
@@ -560,7 +558,7 @@ foreach (var entity in movables)
 **Complex Queries:**
 ```csharp
 // AllOf + NoneOf (entities WITH A and B but WITHOUT C)
-var aliveEnemies = GameWorld.Instance.GetGroup(
+var aliveEnemies = GameWorld.GetGroup(
     GameMatcher.AllOf(GameMatcher.Enemy, GameMatcher.Health)
                 .NoneOf(GameMatcher.Dead)
 );
@@ -574,8 +572,8 @@ For bulk operations or performance-critical code, use pools directly:
 
 ```csharp
 // Get typed pool
-var positionPool = GameWorld.Instance.GetGamePool<Position>();
-var velocityPool = GameWorld.Instance.GetGamePool<Velocity>();
+var positionPool = GameWorld.GetGamePool<Position>();
+var velocityPool = GameWorld.GetGamePool<Velocity>();
 
 // Pool operations
 ref var pos = ref positionPool.Add(entity);
@@ -611,7 +609,7 @@ public class MovementSystem : IEcsRunSystem
     public MovementSystem()
     {
         // Use Leontitas API in systems
-        _movables = GameWorld.Instance.GetGroup(GameMatcher
+        _movables = GameWorld.GetGroup(GameMatcher
             .AllOf(
                 GameMatcher.Position,
                 GameMatcher.Velocity,
@@ -637,7 +635,7 @@ public class HealthSystem : IEcsRunSystem
 
     public HealthSystem()
     {
-        _entities = GameWorld.Instance.GetGroup(GameMatcher
+        _entities = GameWorld.GetGroup(GameMatcher
             .AllOf(
                 GameMatcher.Health));
     }
@@ -655,7 +653,7 @@ public class HealthSystem : IEcsRunSystem
 }
 
 // Setup
-var systems = new EcsSystems(GameWorld.Instance.World);
+var systems = new EcsSystems(GameWorld.Instance);
 systems
     .Add(new MovementSystem())
     .Add(new HealthSystem())
@@ -722,7 +720,7 @@ public class MovementSystem : IInitializeSystem, IExecuteSystem
 
     public void Initialize()
     {
-        _movables = GameWorld.Instance.GetGroup(
+        _movables = GameWorld.GetGroup(
             GameMatcher.AllOf(GameMatcher.Position, GameMatcher.Velocity, GameMatcher.Movable)
         );
     }
@@ -746,7 +744,7 @@ public class DamageSystem : IExecuteSystem, ICleanupSystem
 
     public void Initialize()
     {
-        _damagedEntities = GameWorld.Instance.GetGroup(
+        _damagedEntities = GameWorld.GetGroup(
             GameMatcher.AllOf(GameMatcher.Damage, GameMatcher.Health)
         );
     }
@@ -778,12 +776,11 @@ using UnityEngine;
 
 public class GameController : MonoBehaviour
 {
-    private GameWorld _world;
     private Feature _gameplayFeature;
 
     void Start()
     {
-        _world = GameWorld.Create();
+        GameWorld.Create();
 
         // Create a feature (system group)
         _gameplayFeature = new Feature();
@@ -809,7 +806,7 @@ public class GameController : MonoBehaviour
         // Tear down systems
         _gameplayFeature.TearDown();
 
-        _world.Destroy();
+        GameWorld.Destroy();
     }
 }
 ```
@@ -824,7 +821,7 @@ For each world declared with `[assembly: WorldDeclaration("WorldName")]`, Leonti
 |------|-------------|---------------|
 | `{WorldName}World` | Singleton world wrapper | `GameWorld.Create()` |
 | `{WorldName}Entity` | Type-safe entity handle (ref struct) | `GameEntity.Create()` |
-| `{WorldName}Pool<T>` | Type-safe pool wrapper | `world.GetGamePool<Health>()` |
+| `{WorldName}Pool<T>` | Type-safe pool wrapper | `GameWorld.GetGamePool<Health>()` |
 | `{WorldName}Matcher` | Query builder with component indices | `GameMatcher.AllOf(...)` |
 | `{WorldName}Group` | Query result container | `foreach (var e in group)` |
 | `{WorldName}ComponentsLookup` | Component index registry | *(Internal use)* |
@@ -899,14 +896,14 @@ public sealed partial class GameWorld : EcsWorld
     public static void Create(in EcsWorld.Config config);
     public static void Create();
     
-    public void Destroy();
+    public static new void Destroy();
 
-    public GameEntity CreateEntity();
+    public static GameEntity CreateEntity();
     
-    public GameGroup GetGroup(IAllOfGameMatcher matcher);
-    public GameGroup GetGroup(INoneOfGameMatcher matcher);
+    public static GameGroup GetGroup(IAllOfGameMatcher matcher);
+    public static GameGroup GetGroup(INoneOfGameMatcher matcher);
 
-    public GamePool<TComponent> GetGamePool<TComponent>() 
+    public static GamePool<TComponent> GetGamePool<TComponent>() 
         where TComponent : struct, IComponent;
 }
 ```
@@ -920,7 +917,7 @@ namespace Leontitas;
 
 public readonly ref partial struct GameEntity
 {
-    static GameEntity Create();
+    public static GameEntity Create();
 
     public int InstanceId { get; }
     public void Destroy();
