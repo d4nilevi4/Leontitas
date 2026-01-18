@@ -437,7 +437,7 @@ public class WorldGenerator : IIncrementalGenerator
         sb.AppendLine();
         sb.AppendLine("        public override int GetHashCode()");
         sb.AppendLine("        {");
-        sb.AppendLine("            return HashCode.Combine(_instanceId, _gen);");
+        sb.AppendLine("            return System.HashCode.Combine(_instanceId, _gen);");
         sb.AppendLine("        }");
         sb.AppendLine("    }");
         sb.AppendLine("}");
