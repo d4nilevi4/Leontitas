@@ -6,18 +6,18 @@ class Program
 {
     static void Main(string[] args)
     {
-        GameWorld world = GameWorld.Create();
+        GameWorld.Create();
 
-        GameEntity entity1 = world.CreateEntity()
+        GameEntity entity1 = GameWorld.CreateEntity()
             .AddId(1)
             .SetAliveFlag(true);
         
-        GameEntity entity2 = world.CreateEntity()
+        GameEntity entity2 = GameWorld.CreateEntity()
             .AddId(2)
             .AddQuaternion(1, 1, 1, 1)
             .SetAliveFlag(true);
        
-        GameGroup group = world.GetGroup(GameMatcher
+        GameGroup group = GameWorld.GetGroup(GameMatcher
             .AllOf(GameMatcher.Id, GameMatcher.Alive)
             .NoneOf(GameMatcher.Quaternion));
 
@@ -33,6 +33,6 @@ class Program
             Console.WriteLine("Entity Id without Quaternion: " + gameEntity.IdRef.Value);
         }
         
-        world.Destroy();
+        GameWorld.Destroy();
     }
 }

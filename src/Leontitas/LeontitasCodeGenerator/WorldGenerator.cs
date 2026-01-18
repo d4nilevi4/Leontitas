@@ -155,7 +155,7 @@ public class WorldGenerator : IIncrementalGenerator
         sb.AppendLine("            {");
         sb.AppendLine("                 if(_instance == null && !_instance.IsAlive())");
         sb.AppendLine("                 {");
-        sb.AppendLine("                     throw new System.Exception(\"GameWorld is not created or already destroyed. Use CreateGameWorld method to create it.\");");
+        sb.AppendLine($"                     throw new System.Exception(\"GameWorld is not created or already destroyed. Use Create() method to create it.\");");
         sb.AppendLine("                 }");
         sb.AppendLine("        ");
         sb.AppendLine("                 return _instance;");
@@ -185,30 +185,30 @@ public class WorldGenerator : IIncrementalGenerator
         sb.AppendLine("             return Create(in defaultConfig);");
         sb.AppendLine("        }");
         sb.AppendLine();
-        sb.AppendLine("        public new void Destroy()");
+        sb.AppendLine("        public new static void Destroy()");
         sb.AppendLine("        {");
         sb.AppendLine("             ((Leopotam.EcsLite.EcsWorld)Instance).Destroy();");
         sb.AppendLine("             _instance = null;");
         sb.AppendLine("        }");
         sb.AppendLine();
-        sb.AppendLine($"        public {worldName}Entity CreateEntity()");
+        sb.AppendLine($"        public static {worldName}Entity CreateEntity()");
         sb.AppendLine("        {");
-        sb.AppendLine($"            return new {worldName}Entity(base.NewEntity());");
+        sb.AppendLine($"            return new {worldName}Entity(Instance.NewEntity());");
         sb.AppendLine("        }");
         sb.AppendLine();
-        sb.AppendLine($"        public {worldName}Pool<TComponent> Get{worldName}Pool<TComponent>() where TComponent : struct, IComponent");
+        sb.AppendLine($"        public static {worldName}Pool<TComponent> Get{worldName}Pool<TComponent>() where TComponent : struct, IComponent");
         sb.AppendLine("        {");
-        sb.AppendLine("            Leopotam.EcsLite.EcsPool<TComponent> ecsPool = base.GetPool<TComponent>();");
+        sb.AppendLine("            Leopotam.EcsLite.EcsPool<TComponent> ecsPool = Instance.GetPool<TComponent>();");
         sb.AppendLine($"            return new {worldName}Pool<TComponent>(ecsPool);");
         sb.AppendLine("        }");
         sb.AppendLine("        ");
-        sb.AppendLine($"        public {worldName}Group GetGroup(IAllOf{worldName}Matcher matcher)");
+        sb.AppendLine($"        public static {worldName}Group GetGroup(IAllOf{worldName}Matcher matcher)");
         sb.AppendLine("        {");
         sb.AppendLine($"            {worldName}Matcher {worldName.ToLower()}Matcher = ({worldName}Matcher)matcher;");
         sb.AppendLine($"            int firstIndex = {worldName.ToLower()}Matcher.IncludeIndices[0];");
         sb.AppendLine($"            System.ReadOnlySpan<int> includeIndices = System.MemoryExtensions.AsSpan({worldName.ToLower()}Matcher.IncludeIndices, 1);");
         sb.AppendLine("            ");
-        sb.AppendLine("            Leopotam.EcsLite.EcsWorld.Mask filterMask = FilterByComponentIndex(firstIndex);");
+        sb.AppendLine($"            Leopotam.EcsLite.EcsWorld.Mask filterMask = {worldName}World.FilterByComponentIndex(firstIndex);");
         sb.AppendLine();
         sb.AppendLine("            foreach (int includeIndex in includeIndices)");
         sb.AppendLine("            {");
@@ -223,12 +223,12 @@ public class WorldGenerator : IIncrementalGenerator
         sb.AppendLine($"            return new {worldName}Group(filterMask.End());");
         sb.AppendLine("        }");
         sb.AppendLine();
-        sb.AppendLine($"        public {worldName}Group GetGroup(INoneOf{worldName}Matcher matcher)");
+        sb.AppendLine($"        public static {worldName}Group GetGroup(INoneOf{worldName}Matcher matcher)");
         sb.AppendLine("        {");
-        sb.AppendLine($"            return this.GetGroup((IAllOf{worldName}Matcher)matcher);");
+        sb.AppendLine($"            return {worldName}World.GetGroup((IAllOf{worldName}Matcher)matcher);");
         sb.AppendLine("        }");
         sb.AppendLine();
-        sb.AppendLine("        private Leopotam.EcsLite.EcsWorld.Mask FilterByComponentIndex(int index)");
+        sb.AppendLine("        private static Leopotam.EcsLite.EcsWorld.Mask FilterByComponentIndex(int index)");
         sb.AppendLine("        {");
         sb.AppendLine("            switch (index)");
         sb.AppendLine("            {");
@@ -240,7 +240,7 @@ public class WorldGenerator : IIncrementalGenerator
                 ? component.ComponentName
                 : $"{component.FullNamespace}.{component.ComponentName}";
             sb.AppendLine($"                case {i}:");
-            sb.AppendLine($"                    return this.Filter<{componentFullName}>();");
+            sb.AppendLine($"                    return Instance.Filter<{componentFullName}>();");
         }
 
         sb.AppendLine("                default:");
@@ -330,7 +330,7 @@ public class WorldGenerator : IIncrementalGenerator
         sb.AppendLine();
         sb.AppendLine($"        public static {worldName}Entity Create()");
         sb.AppendLine("        {");
-        sb.AppendLine($"            return {worldName}World.Instance.CreateEntity();");
+        sb.AppendLine($"            return {worldName}World.CreateEntity();");
         sb.AppendLine("        }");
         sb.AppendLine();
         sb.AppendLine("        public void Destroy()");
@@ -651,7 +651,7 @@ public class WorldGenerator : IIncrementalGenerator
         sb.AppendLine($"    public readonly ref partial struct {worldName}Entity");
         sb.AppendLine("    {");
         sb.AppendLine($"        private static {worldName}Pool<{componentFullName}> {poolName} =>");
-        sb.AppendLine($"            {worldName}World.Instance.Get{worldName}Pool<{componentFullName}>();");
+        sb.AppendLine($"            {worldName}World.Get{worldName}Pool<{componentFullName}>();");
         sb.AppendLine();
 
         bool isFlag = component.Fields.Length == 0;

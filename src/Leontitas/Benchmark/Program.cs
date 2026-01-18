@@ -25,7 +25,7 @@ public class Benchmark
     [Benchmark]
     public void LeontitasChangeMethod()
     {
-        Leontitas.GameWorld world = Leontitas.GameWorld.Create();
+        Leontitas.GameWorld.Create();
 
         for (int i = 0; i < EntityCount; i++)
         {
@@ -34,30 +34,30 @@ public class Benchmark
                 .AddHp(0);
         }
 
-        GameGroup idGroup = world.GetGroup(GameMatcher.AllOf(GameMatcher.Id));
-        GameGroup hpGroup = world.GetGroup(GameMatcher.AllOf(GameMatcher.Hp));
+        GameGroup idGroup = Leontitas.GameWorld.GetGroup(GameMatcher.AllOf(GameMatcher.Id));
+        GameGroup hpGroup = Leontitas.GameWorld.GetGroup(GameMatcher.AllOf(GameMatcher.Hp));
 
         int currentId = 0;
-        foreach (GameEntity GameEntity in idGroup)
+        foreach (GameEntity gameEntity in idGroup)
         {
-            GameEntity.ChangeId(currentId++);
+            gameEntity.ChangeId(currentId++);
         }
 
         for (int i = 0; i < Runs; i++)
         {
-            foreach (GameEntity GameEntity in hpGroup)
+            foreach (GameEntity gameEntity in hpGroup)
             {
-                GameEntity.ChangeHp(GameEntity.Hp + 1);
+                gameEntity.ChangeHp(gameEntity.Hp + 1);
             }
         }
 
-        world.Destroy();
+        Leontitas.GameWorld.Destroy();
     }
 
     [Benchmark]
     public void LeontitasReplaceMethod()
     {
-        Leontitas.GameWorld world = Leontitas.GameWorld.Create();
+        Leontitas.GameWorld.Create();
 
         for (int i = 0; i < EntityCount; i++)
         {
@@ -66,30 +66,30 @@ public class Benchmark
                 .AddHp(0);
         }
 
-        GameGroup idGroup = world.GetGroup(GameMatcher.AllOf(GameMatcher.Id));
-        GameGroup hpGroup = world.GetGroup(GameMatcher.AllOf(GameMatcher.Hp));
+        GameGroup idGroup = Leontitas.GameWorld.GetGroup(GameMatcher.AllOf(GameMatcher.Id));
+        GameGroup hpGroup = Leontitas.GameWorld.GetGroup(GameMatcher.AllOf(GameMatcher.Hp));
 
         int currentId = 0;
-        foreach (GameEntity GameEntity in idGroup)
+        foreach (GameEntity gameEntity in idGroup)
         {
-            GameEntity.ReplaceId(currentId++);
+            gameEntity.ReplaceId(currentId++);
         }
 
         for (int i = 0; i < Runs; i++)
         {
-            foreach (GameEntity GameEntity in hpGroup)
+            foreach (GameEntity gameEntity in hpGroup)
             {
-                GameEntity.ReplaceHp(GameEntity.Hp + 1);
+                gameEntity.ReplaceHp(gameEntity.Hp + 1);
             }
         }
 
-        world.Destroy();
+        Leontitas.GameWorld.Destroy();
     }
 
     [Benchmark]
     public void LeontitasWithPools()
     {
-        Leontitas.GameWorld world = Leontitas.GameWorld.Create();
+        Leontitas.GameWorld.Create();
 
         for (int i = 0; i < EntityCount; i++)
         {
@@ -98,28 +98,28 @@ public class Benchmark
                 .AddHp(0);
         }
 
-        GameGroup idGroup = world.GetGroup(GameMatcher.AllOf(GameMatcher.Id));
-        GameGroup hpGroup = world.GetGroup(GameMatcher.AllOf(GameMatcher.Hp));
+        GameGroup idGroup = Leontitas.GameWorld.GetGroup(GameMatcher.AllOf(GameMatcher.Id));
+        GameGroup hpGroup = Leontitas.GameWorld.GetGroup(GameMatcher.AllOf(GameMatcher.Hp));
 
-        Leontitas.GamePool<Id> idPool = world.GetGamePool<Id>();
-        Leontitas.GamePool<Hp> hpPool = world.GetGamePool<Hp>();
+        Leontitas.GamePool<Id> idPool = Leontitas.GameWorld.GetGamePool<Id>();
+        Leontitas.GamePool<Hp> hpPool = Leontitas.GameWorld.GetGamePool<Hp>();
 
 
         int currentId = 0;
-        foreach (GameEntity GameEntity in idGroup)
+        foreach (GameEntity gameEntity in idGroup)
         {
-            idPool.Get(GameEntity).Value = currentId++;
+            idPool.Get(gameEntity).Value = currentId++;
         }
 
         for (int i = 0; i < Runs; i++)
         {
-            foreach (GameEntity GameEntity in hpGroup)
+            foreach (GameEntity gameEntity in hpGroup)
             {
-                hpPool.Get(GameEntity).Value++;
+                hpPool.Get(gameEntity).Value++;
             }
         }
 
-        world.Destroy();
+        Leontitas.GameWorld.Destroy();
     }
 
     [Benchmark]
@@ -147,16 +147,16 @@ public class Benchmark
         Leopotam.EcsLite.EcsFilter hpFilter = world.Filter<Hp>().End();
 
         int currentId = 0;
-        foreach (int GameEntity in idFilter)
+        foreach (int gameEntity in idFilter)
         {
-            idPool.Get(GameEntity).Value = currentId++;
+            idPool.Get(gameEntity).Value = currentId++;
         }
 
         for (int i = 0; i < Runs; i++)
         {
-            foreach (int GameEntity in hpFilter)
+            foreach (int gameEntity in hpFilter)
             {
-                hpPool.Get(GameEntity).Value++;
+                hpPool.Get(gameEntity).Value++;
             }
         }
 
