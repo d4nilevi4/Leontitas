@@ -592,7 +592,7 @@ public class WorldGenerator : IIncrementalGenerator
 
         for (int i = 0; i < components.Length; i++)
         {
-            sb.AppendLine($"        public static readonly int {components[i].ComponentName} = {i};");
+            sb.AppendLine($"        public static readonly int {GetComponentApiName(components[i].ComponentName)} = {i};");
         }
 
         sb.AppendLine("    }");
@@ -618,7 +618,7 @@ public class WorldGenerator : IIncrementalGenerator
 
         foreach (var component in components)
         {
-            sb.AppendLine($"        public static int {component.ComponentName} => {worldName}ComponentsLookup.{component.ComponentName};");
+            sb.AppendLine($"        public static int {GetComponentApiName(component.ComponentName)} => {worldName}ComponentsLookup.{GetComponentApiName(component.ComponentName)};");
         }
 
         sb.AppendLine("    }");

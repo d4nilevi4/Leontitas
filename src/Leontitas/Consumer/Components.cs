@@ -4,7 +4,7 @@ namespace Consumer;
 
 [Game] public struct Id : IComponent { public int Value; }
 [Game] public struct Hp : IComponent { public int Value; }
-[Game] public struct Alive : IComponent { }
+[Game] public struct AliveComponent : IComponent { }
 
 [Game]
 public struct Quaternion : IComponent
