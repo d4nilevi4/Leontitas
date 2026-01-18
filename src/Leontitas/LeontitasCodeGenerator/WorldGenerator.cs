@@ -153,7 +153,7 @@ public class WorldGenerator : IIncrementalGenerator
         sb.AppendLine("        {");
         sb.AppendLine("            get");
         sb.AppendLine("            {");
-        sb.AppendLine("                 if(_instance == null && !_instance.IsAlive())");
+        sb.AppendLine($"                 if(_instance == null && !{worldName}World.IsAlive())");
         sb.AppendLine("                 {");
         sb.AppendLine($"                     throw new System.Exception(\"GameWorld is not created or already destroyed. Use Create() method to create it.\");");
         sb.AppendLine("                 }");
@@ -168,9 +168,14 @@ public class WorldGenerator : IIncrementalGenerator
         sb.AppendLine("        {");
         sb.AppendLine("        }");
         sb.AppendLine();
+        sb.AppendLine($"        public static new bool IsAlive()");
+        sb.AppendLine("        {");
+        sb.AppendLine("            return ((Leopotam.EcsLite.EcsWorld)Instance).IsAlive();");
+        sb.AppendLine("        }");
+        sb.AppendLine();
         sb.AppendLine($"        public static {worldName}World Create(in Leopotam.EcsLite.EcsWorld.Config config)");
         sb.AppendLine("        {");
-        sb.AppendLine("            if(_instance != null && _instance.IsAlive())");
+        sb.AppendLine($"            if(_instance != null && {worldName}World.IsAlive())");
         sb.AppendLine("            {");
         sb.AppendLine("                throw new System.Exception(\"GameWorld is already created. Destroy it before creating a new one.\");");
         sb.AppendLine("            }");
@@ -194,6 +199,11 @@ public class WorldGenerator : IIncrementalGenerator
         sb.AppendLine($"        public static {worldName}Entity CreateEntity()");
         sb.AppendLine("        {");
         sb.AppendLine($"            return new {worldName}Entity(Instance.NewEntity());");
+        sb.AppendLine("        }");
+        sb.AppendLine();
+        sb.AppendLine($"        public static void DestroyEntity({worldName}Entity entity)");
+        sb.AppendLine("        {");
+        sb.AppendLine($"            Instance.DelEntity(entity.InstanceId);");
         sb.AppendLine("        }");
         sb.AppendLine();
         sb.AppendLine($"        public static {worldName}Pool<TComponent> Get{worldName}Pool<TComponent>() where TComponent : struct, IComponent");
@@ -335,7 +345,7 @@ public class WorldGenerator : IIncrementalGenerator
         sb.AppendLine();
         sb.AppendLine("        public void Destroy()");
         sb.AppendLine("        {");
-        sb.AppendLine($"            {worldName}World.Instance.DelEntity(this.InstanceId);");
+        sb.AppendLine($"            {worldName}World.DestroyEntity(this);");
         sb.AppendLine("        }");
         sb.AppendLine();
         sb.AppendLine($"        public Packed{worldName}Entity Pack()");
@@ -389,8 +399,7 @@ public class WorldGenerator : IIncrementalGenerator
         sb.AppendLine("        {");
         sb.AppendLine("            entity = default;");
         sb.AppendLine();
-        sb.AppendLine($"            var world = {worldName}World.Instance;");
-        sb.AppendLine("            if (!world.IsAlive())");
+        sb.AppendLine($"            if (!{worldName}World.IsAlive())");
         sb.AppendLine("            {");
         sb.AppendLine("                return false;");
         sb.AppendLine("            }");
@@ -398,7 +407,7 @@ public class WorldGenerator : IIncrementalGenerator
         sb.AppendLine("            int currentGen;");
         sb.AppendLine("            try");
         sb.AppendLine("            {");
-        sb.AppendLine("                currentGen = world.GetEntityGen(_instanceId);");
+        sb.AppendLine($"                currentGen = {worldName}World.Instance.GetEntityGen(_instanceId);");
         sb.AppendLine("            }");
         sb.AppendLine("            catch (System.IndexOutOfRangeException)");
         sb.AppendLine("            {");

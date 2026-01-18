@@ -893,12 +893,15 @@ public sealed partial class GameWorld : EcsWorld
 
     public static GameWorld Instance { get; }
 
+    public static bool IsAlive();
+
     public static void Create(in EcsWorld.Config config);
     public static void Create();
     
     public static new void Destroy();
 
     public static GameEntity CreateEntity();
+    public static void CreateEntity(GameEntity entity);
     
     public static GameGroup GetGroup(IAllOfGameMatcher matcher);
     public static GameGroup GetGroup(INoneOfGameMatcher matcher);

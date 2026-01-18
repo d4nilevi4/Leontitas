@@ -11,12 +11,12 @@ class Program
         GameEntity entity1 = GameWorld.CreateEntity()
             .AddId(1)
             .SetAliveFlag(true);
-        
+
         GameEntity entity2 = GameWorld.CreateEntity()
             .AddId(2)
             .AddQuaternion(1, 1, 1, 1)
             .SetAliveFlag(true);
-       
+
         GameGroup group = GameWorld.GetGroup(GameMatcher
             .AllOf(GameMatcher.Id, GameMatcher.Alive)
             .NoneOf(GameMatcher.Quaternion));
@@ -27,12 +27,13 @@ class Program
         }
 
         entity1.Destroy();
-        
+
         foreach (GameEntity gameEntity in group)
         {
             Console.WriteLine("Entity Id without Quaternion: " + gameEntity.IdRef.Value);
         }
-        
-        GameWorld.Destroy();
+
+        if (GameWorld.IsAlive())
+            GameWorld.Destroy();
     }
 }
